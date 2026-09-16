@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AttendMDI">
+<meta name="theme-color" content="#1a1a2e">
+<title>AttendMDI</title>
+<style>
+  :root{
+    --navy:#1a1a2e;
+    --navy-2:#242449;
+    --white:#ffffff;
+    --bg:#f4f5f8;
+    --green:#1f9d55;
+    --green-bg:#e6f7ec;
+    --red:#d64545;
+    --red-bg:#fbeaea;
+    --amber:#c8842a;
+    --amber-bg:#fbf1e2;
+    --border:#e3e5ec;
+    --text:#1a1a2e;
+    --muted:#6c7080;
+    --radius:12px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,Segoe UI,Roboto,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    padding-bottom:calc(24px + env(safe-area-inset-bottom));
+  }
+  input,textarea,select,button{font-size:16px;font-family:inherit;}
+  button{cursor:pointer;}
+
+  /* ---------- Header ---------- */
+  .app-header{
+    background:var(--navy);
+    color:var(--white);
+    padding:calc(14px + env(safe-area-inset-top)) 16px 14px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    position:sticky;top:0;z-index:40;
+  }
+  .logo-wrap{width:38px;height:38px;flex:0 0 auto;border-radius:50%;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;}
+  .logo-wrap img{width:100%;height:100%;object-fit:cover;}
+  .logo-svg{width:38px;height:38px;}
+  .app-title{font-size:18px;font-weight:700;letter-spacing:-0.01em;flex:1;}
+  .app-sub{display:block;font-size:11px;font-weight:400;color:#b9bad0;letter-spacing:0.02em;}
+  .sync-dot-wrap{display:flex;align-items:center;gap:6px;font-size:11px;color:#c7c8dc;}
+  .sync-dot{width:9px;height:9px;border-radius:50%;background:#7a7c96;}
+  .sync-dot.synced{background:#3ddc84;}
+  .sync-dot.syncing{background:#e0a542;animation:pulse 1s infinite;}
+  .sync-dot.error{background:#e05656;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.35}}
+  .gear-btn{background:none;border:none;color:#c7c8dc;font-size:18px;padding:4px;}
+
+  /* ---------- Quote bar ---------- */
+  .quote-bar{
+    background:#eceefb;
+    border-bottom:1px solid var(--border);
+    padding:10px 16px;
+    text-align:center;
+  }
+  .quote-text{font-style:italic;font-size:13.5px;color:#33344f;line-height:1.4;}
+  .quote-credit{font-size:11px;color:var(--muted);margin-top:3px;}
+
+  /* ---------- iOS add-to-home banner ---------- */
+  .ath-banner{
+    display:none;
+    background:var(--navy-2);color:#fff;
+    padding:10px 16px;font-size:12.5px;
+    align-items:center;justify-content:space-between;gap:8px;
+  }
+  .ath-banner.show{display:flex;}
+  .ath-banner button{background:none;border:none;color:#c7c8dc;font-size:16px;}
+
+  /* ---------- Tabs ---------- */
+  .tabs{
+    display:flex;overflow-x:auto;background:var(--white);
+    border-bottom:1px solid var(--border);
+    position:sticky;top:calc(66px + env(safe-area-inset-top));z-index:39;
+    -webkit-overflow-scrolling:touch;
+  }
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab-btn{
+    flex:0 0 auto;padding:12px 14px;font-size:13px;font-weight:600;color:var(--muted);
+    background:none;border:none;border-bottom:3px solid transparent;position:relative;white-space:nowrap;
+  }
+  .tab-btn.active{color:var(--navy);border-bottom-color:var(--navy);}
+  .tab-badge{
+    position:absolute;top:6px;right:2px;background:var(--red);color:#fff;
+    font-size:9px;font-weight:700;border-radius:8px;padding:1px 5px;line-height:1.3;
+  }
+
+  main{max-width:720px;margin:0 auto;padding:16px;}
+  .view{display:none;}
+  .view.active{display:block;}
+
+  .card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px;}
+  h2.section-title{font-size:16px;font-weight:700;margin:0 0 12px;}
+  h3.sub-title{font-size:14px;font-weight:700;margin:0 0 8px;}
+  .muted{color:var(--muted);font-size:12.5px;}
+
+  /* Overview table */
+  table.ov-table{width:100%;border-collapse:collapse;font-size:13px;}
+  table.ov-table th{text-align:left;color:var(--muted);font-weight:600;font-size:11px;padding:6px 6px;border-bottom:1px solid var(--border);}
+  table.ov-table td{padding:10px 6px;border-bottom:1px solid var(--border);}
+  table.ov-table tr:last-child td{border-bottom:none;}
+  table.ov-table tr.ov-row{cursor:pointer;}
+  table.ov-table tr.ov-row:active{background:var(--bg);}
+  .pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;}
+  .pill.ok{background:var(--green-bg);color:var(--green);}
+  .pill.warn{background:var(--amber-bg);color:var(--amber);}
+  .pill.bad{background:var(--red-bg);color:var(--red);}
+
+  /* Next classes / reminders lists */
+  .list-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);gap:10px;}
+  .list-item:last-child{border-bottom:none;}
+  .li-left{flex:1;min-width:0;}
+  .li-title{font-weight:700;font-size:14px;}
+  .li-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+  .li-status{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;}
+  .today-tag{background:var(--navy);color:#fff;font-size:10px;padding:2px 6px;border-radius:6px;margin-right:6px;}
+  .empty-state{text-align:center;color:var(--muted);padding:30px 10px;font-size:13.5px;}
+
+  /* Subject view */
+  .subj-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:6px;}
+  .subj-name{font-size:17px;font-weight:700;}
+  .subj-faculty{font-size:12.5px;color:var(--muted);margin-top:2px;}
+  .subj-sessions{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5;}
+  .stat-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+  .stat-box{flex:1;min-width:70px;background:var(--bg);border-radius:10px;padding:10px;text-align:center;}
+  .stat-num{font-size:19px;font-weight:800;}
+  .stat-label{font-size:10.5px;color:var(--muted);margin-top:2px;}
+
+  .phase-label{font-size:12px;font-weight:700;color:var(--muted);margin:16px 0 8px;text-transform:none;}
+  .class-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+  .class-cell{
+    aspect-ratio:1;border-radius:9px;border:1.5px solid var(--border);background:var(--bg);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    font-size:11px;font-weight:700;color:var(--muted);position:relative;
+  }
+  .class-cell.attended{background:var(--green-bg);border-color:var(--green);color:var(--green);}
+  .class-cell.missed{background:var(--red-bg);border-color:var(--red);color:var(--red);}
+  .class-cell .cnum{font-size:13px;}
+  .class-cell .cdate{font-size:8.5px;margin-top:1px;font-weight:500;}
+  .class-cell .note-dot{position:absolute;top:3px;right:3px;width:5px;height:5px;border-radius:50%;background:var(--navy);}
+
+  /* Tests */
+  .test-item{border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px;}
+  .test-top{display:flex;justify-content:space-between;font-size:13.5px;font-weight:700;}
+  .test-meta{font-size:11.5px;color:var(--muted);margin-top:3px;}
+  .btn{
+    background:var(--navy);color:#fff;border:none;border-radius:9px;padding:10px 14px;
+    font-weight:700;font-size:13.5px;width:100%;
+  }
+  .btn.secondary{background:var(--bg);color:var(--navy);border:1px solid var(--border);}
+  .btn.small{width:auto;padding:6px 12px;font-size:12px;}
+  .btn.danger{background:var(--red-bg);color:var(--red);}
+  .btn.danger, .btn.secondary{width:100%;}
+  .row-btns{display:flex;gap:8px;margin-top:10px;}
+  .row-btns .btn{flex:1;}
+
+  label.f-label{font-size:12px;font-weight:600;color:var(--muted);display:block;margin:10px 0 4px;}
+  input.f-input,textarea.f-input,select.f-input{
+    width:100%;border:1px solid var(--border);border-radius:8px;padding:9px 10px;background:#fdfdfe;
+  }
+  textarea.f-input{min-height:70px;resize:vertical;}
+
+  /* Modal */
+  .modal-backdrop{
+    display:none;position:fixed;inset:0;background:rgba(20,20,35,0.5);z-index:100;
+    align-items:flex-end;justify-content:center;
+  }
+  .modal-backdrop.show{display:flex;}
+  .modal-sheet{
+    background:#fff;width:100%;max-width:720px;border-radius:16px 16px 0 0;
+    padding:18px 18px calc(20px + env(safe-area-inset-bottom));max-height:88vh;overflow-y:auto;
+  }
+  .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+  .modal-head h3{margin:0;font-size:16px;}
+  .modal-close{background:none;border:none;font-size:20px;color:var(--muted);}
+  .status-btns{display:flex;gap:8px;margin-top:6px;}
+  .status-btn{flex:1;border-radius:9px;padding:10px;font-weight:700;font-size:12.5px;border:1.5px solid var(--border);background:var(--bg);color:var(--muted);}
+  .status-btn.attended.active{background:var(--green-bg);border-color:var(--green);color:var(--green);}
+  .status-btn.missed.active{background:var(--red-bg);border-color:var(--red);color:var(--red);}
+  .photo-thumb{max-width:100%;border-radius:8px;margin-top:8px;display:none;}
+  .photo-thumb.show{display:block;}
+  .marked-at{font-size:11px;color:var(--muted);margin-top:6px;}
+
+  .settings-block{margin-bottom:16px;}
+  .settings-block p{font-size:12.5px;color:var(--muted);line-height:1.5;}
+  pre.sql-box{background:#1a1a2e;color:#d8dae8;font-size:10.5px;padding:10px;border-radius:8px;overflow-x:auto;white-space:pre;}
+</style>
+</head>
+<body>
+
+<div class="ath-banner" id="athBanner">
+  <span>📲 Tap Share, then "Add to Home Screen" for the full app feel.</span>
+  <button id="athClose">✕</button>
+</div>
+
+<header class="app-header">
+  <div class="logo-wrap">
+    <img id="logoImg" src="icon.png" alt="" onerror="this.style.display='none';document.getElementById('logoSvg').style.display='block'">
+    <svg id="logoSvg" class="logo-svg" style="display:none" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20" cy="20" r="20" fill="#ffffff"/>
+      <text x="20" y="25" text-anchor="middle" font-family="Georgia,serif" font-size="12" font-weight="700" fill="#1a1a2e">MDI</text>
+    </svg>
+  </div>
+  <div class="app-title">AttendMDI<span class="app-sub">Term V &middot; PGDM 2025-27</span></div>
+  <div class="sync-dot-wrap">
+    <span id="syncLabel">local</span>
+    <span class="sync-dot" id="syncDot"></span>
+  </div>
+  <button class="gear-btn" id="settingsBtn">⚙</button>
+</header>
+
+<div class="quote-bar">
+  <div class="quote-text" id="quoteText">"Loading today's quote…"</div>
+
+</div>
+
+<nav class="tabs" id="tabsNav"></nav>
+
+<main>
+  <!-- Overview -->
+  <section class="view" id="view-overview">
+    <div class="card">
+      <h2 class="section-title">This term at a glance</h2>
+      <table class="ov-table">
+        <thead><tr><th>Subject</th><th>Attended</th><th>Missed</th><th>Need</th><th>Can miss</th><th>Pending</th></tr></thead>
+        <tbody id="ovBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Next 7 days -->
+  <section class="view" id="view-next">
+    <div class="card">
+      <h2 class="section-title">Next 7 days</h2>
+      <div id="nextList"></div>
+    </div>
+  </section>
+
+  <!-- Reminders -->
+  <section class="view" id="view-reminders">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h2 class="section-title" style="margin:0;">Reminders</h2>
+        <button class="btn small" id="addTestGlobalBtn">+ Add</button>
+      </div>
+      <div id="remindersList" style="margin-top:10px;"></div>
+    </div>
+  </section>
+
+  <!-- Subject views injected here -->
+  <div id="subjectViews"></div>
+</main>
+
+<!-- Class detail modal -->
+<div class="modal-backdrop" id="classModal">
+  <div class="modal-sheet">
+    <div class="modal-head">
+      <h3 id="cmTitle">Class</h3>
+      <button class="modal-close" id="cmClose">✕</button>
+    </div>
+    <div class="muted" id="cmSchedule"></div>
+    <label class="f-label">Date</label>
+    <input type="date" class="f-input" id="cmDateOverride">
+    <label class="f-label">Time</label>
+    <input class="f-input" id="cmTime" placeholder="e.g. 10:15 – 11:45 AM">
+    <label class="f-label">Location</label>
+    <input class="f-input" id="cmRoom" placeholder="e.g. Gurukula Building, Room 12 — leave blank if TBD">
+    <label class="f-label">Attendance</label>
+    <div class="status-btns">
+      <button class="status-btn attended" id="cmBtnAttended">✓ Attended</button>
+      <button class="status-btn missed" id="cmBtnMissed">✕ Missed</button>
+      <button class="status-btn" id="cmBtnClear">Clear</button>
+    </div>
+    <div class="marked-at" id="cmMarkedAt"></div>
+    <label class="f-label">Notes / minutes</label>
+    <textarea class="f-input" id="cmNotes" placeholder="What was covered, homework, etc."></textarea>
+    <label class="f-label">Photo</label>
+    <input type="file" accept="image/*" capture="environment" class="f-input" id="cmPhotoInput">
+    <img class="photo-thumb" id="cmPhotoThumb">
+    <div class="row-btns">
+      <button class="btn secondary" id="cmRemovePhoto">Remove photo</button>
+      <button class="btn" id="cmSave">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Test/entry modal -->
+<div class="modal-backdrop" id="testModal">
+  <div class="modal-sheet">
+    <div class="modal-head">
+      <h3>Add entry</h3>
+      <button class="modal-close" id="tmClose">✕</button>
+    </div>
+    <label class="f-label">Subject</label>
+    <select class="f-input" id="tmSubject"></select>
+    <label class="f-label">Type</label>
+    <select class="f-input" id="tmType">
+      <option>Class test</option><option>Presentation</option><option>Project</option><option>Viva</option>
+      <option>Assignment</option><option>Mid Term</option><option>End Term</option>
+      <option value="__custom">Other (type below)</option>
+    </select>
+    <input class="f-input" id="tmTypeCustom" placeholder="Custom type" style="display:none;margin-top:6px;">
+    <label class="f-label">Title</label>
+    <input class="f-input" id="tmTitle" placeholder="e.g. Mid-term valuation case">
+    <label class="f-label">Date</label>
+    <input type="date" class="f-input" id="tmDate">
+    <label class="f-label">Mode</label>
+    <select class="f-input" id="tmMode"><option>Individual</option><option>Group</option></select>
+    <div id="tmGroupWrap" style="display:none;">
+      <label class="f-label">Group members</label>
+      <input class="f-input" id="tmGroupMembers" placeholder="Comma-separated names">
+    </div>
+    <label class="f-label">Marks / weightage</label>
+    <input class="f-input" id="tmMarks" placeholder="e.g. 15% of grade">
+    <label class="f-label">Notes</label>
+    <textarea class="f-input" id="tmNotes"></textarea>
+    <label style="display:flex;align-items:center;gap:8px;margin:12px 0 0;font-size:13px;font-weight:600;color:var(--muted);">
+      <input type="checkbox" id="tmDone" style="width:auto;"> Marked as completed
+    </label>
+    <div class="row-btns">
+      <button class="btn secondary" id="tmDelete" style="display:none;">Delete</button>
+      <button class="btn" id="tmSave">Save entry</button>
+    </div>
+  </div>
+</div>
+
+<!-- Settings modal -->
+<div class="modal-backdrop" id="settingsModal">
+  <div class="modal-sheet">
+    <div class="modal-head">
+      <h3>Settings &amp; sync</h3>
+      <button class="modal-close" id="smClose">✕</button>
+    </div>
+    <div class="settings-block">
+      <p>Connect a Supabase project to sync across your devices. Without this, data stays only in this browser (localStorage).</p>
+      <label class="f-label">Supabase Project URL</label>
+      <input class="f-input" id="sbUrl" placeholder="https://xxxx.supabase.co">
+      <label class="f-label">Supabase anon key</label>
+      <input class="f-input" id="sbKey" placeholder="eyJ...">
+      <div class="row-btns">
+        <button class="btn secondary" id="sbDisconnect">Disconnect</button>
+        <button class="btn" id="sbConnect">Save &amp; connect</button>
+      </div>
+      <p style="margin-top:14px;">Run this once in your Supabase SQL editor to create the table:</p>
+      <pre class="sql-box">create table attendmdi_state (
+  id text primary key,
+  data jsonb,
+  updated_at timestamptz default now()
+);
+alter table attendmdi_state enable row level security;
+create policy "public rw" on attendmdi_state
+  for all using (true) with check (true);</pre>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ============================================================
+   AttendMDI — Term V data model
+   Quotes below are ORIGINAL character-voiced lines (not verbatim
+   scripted dialogue) written in the spirit of each show, to keep
+   this file free of copyrighted script text. Swap in your own
+   favourites any time — just edit the QUOTES array.
+   ============================================================ */
+
+const TERM_START = "2026-09-21";
+const TERM_END   = "2026-12-20";
+const ROW_ID = "hrishita_term5";
+
+const SUBJECTS = [
+  { code:"IN",   name:"Innovation", section:"B", faculty:"Meeta Dasgupta",
+    sessions:[{day:"Mon",time:"10:15 – 11:45 AM",room:"Gurukula Building, Room 12"},
+              {day:"Wed",time:"10:15 – 11:45 AM",room:"Gurukula Building, Room 12"}] },
+  { code:"BS",   name:"Behavioral Strategy", section:"C", faculty:"Saikat Banerjee",
+    sessions:[{day:"Mon",time:"12:00 – 1:30 PM",room:""},
+              {day:"Wed",time:"12:00 – 1:30 PM",room:""},
+              {day:"Fri",time:"12:00 – 1:30 PM",room:""}] },
+  { code:"BRM",  name:"Brand Management", section:"A", faculty:"Avinash Kapoor",
+    sessions:[{day:"Tue",time:"10:15 – 11:45 AM",room:"Gurukula Building, Room 12"},
+              {day:"Thu",time:"10:15 – 11:45 AM",room:"Gurukula Building, Room 12"}] },
+  { code:"BFBV", name:"Behavioural Finance and Business Valuation", section:null, faculty:"Shalini K. Sahi / Sunil Ashra",
+    sessions:[{day:"Tue",time:"12:00 – 1:30 PM",room:"Gurukula Building, Room 11"},
+              {day:"Thu",time:"12:00 – 1:30 PM",room:"Gurukula Building, Room 11"}] },
+  { code:"MDT",  name:"Managing Digital Transformation", section:null, faculty:"Divya Sharma",
+    sessions:[{day:"Tue",time:"2:15 – 3:45 PM",room:""},
+              {day:"Thu",time:"2:15 – 3:45 PM",room:""}] },
+];
+
+const QUOTES = [
+  {t:"I don't need coffee, I need someone else to own the paperwork.",c:"Charlie",s:"Two and a Half Men"},
+  {t:"I've read every self-help book and I'm still tired all the time.",c:"Alan",s:"Two and a Half Men"},
+  {t:"I clean up other people's messes for a living, ask my clients.",c:"Berta",s:"Two and a Half Men"},
+  {t:"Deadlines are just polite suggestions with anxiety attached.",c:"Charlie",s:"Two and a Half Men"},
+  {t:"Homework would be great if I ever remembered where I left it.",c:"Jake",s:"Two and a Half Men"},
+  {t:"I've had three jobs this year and one nap that actually helped.",c:"Alan",s:"Two and a Half Men"},
+  {t:"Meetings are naps you're not legally allowed to take.",c:"Charlie",s:"Two and a Half Men"},
+  {t:"Your kitchen is a crime scene and I'm the only witness.",c:"Berta",s:"Two and a Half Men"},
+  {t:"Being an adult is just being tired in a nicer shirt.",c:"Alan",s:"Two and a Half Men"},
+  {t:"I skipped breakfast, lunch, and most of my responsibilities today.",c:"Charlie",s:"Two and a Half Men"},
+  {t:"Teachers assign homework like we don't already have a whole life.",c:"Jake",s:"Two and a Half Men"},
+  {t:"I've seen messier offices than this, but not by much.",c:"Berta",s:"Two and a Half Men"},
+  {t:"Nobody warns you how tired networking actually makes you.",c:"Alan",s:"Two and a Half Men"},
+  {t:"A snack break is basically a tiny, delicious vacation.",c:"Charlie",s:"Two and a Half Men"},
+  {t:"I moved in temporarily to figure things out. Still figuring.",c:"Alan",s:"Two and a Half Men"},
+
+  {t:"Cool cool cool, no doubt, totally caffeinated, definitely not fine.",c:"Jake Peralta",s:"Brooklyn Nine-Nine"},
+  {t:"Management is mostly pretending emotions don't exist during meetings.",c:"Captain Holt",s:"Brooklyn Nine-Nine"},
+  {t:"Team meetings are just my nap getting rudely interrupted.",c:"Gina Linetti",s:"Brooklyn Nine-Nine"},
+  {t:"Terry needs a snack before Terry can care about the agenda.",c:"Terry",s:"Brooklyn Nine-Nine"},
+  {t:"I brought homemade snacks to the meeting, nobody asked, everyone ate.",c:"Boyle",s:"Brooklyn Nine-Nine"},
+  {t:"I don't do small talk before coffee. Or after coffee.",c:"Rosa",s:"Brooklyn Nine-Nine"},
+  {t:"I color-coded the syllabus, then color-coded the color code.",c:"Amy Santiago",s:"Brooklyn Nine-Nine"},
+  {t:"The best part of any meeting is the free snacks.",c:"Hitchcock",s:"Brooklyn Nine-Nine"},
+  {t:"This deadline snuck up on me like Monday always does.",c:"Jake Peralta",s:"Brooklyn Nine-Nine"},
+  {t:"That was a joke about the budget. I do those sometimes.",c:"Captain Holt",s:"Brooklyn Nine-Nine"},
+  {t:"I studied so hard for finals I forgot to eat for two days.",c:"Amy Santiago",s:"Brooklyn Nine-Nine"},
+  {t:"If the meeting could've been an email, I'd already be asleep.",c:"Rosa",s:"Brooklyn Nine-Nine"},
+  {t:"Cafeteria food critiques are my true management skill.",c:"Boyle",s:"Brooklyn Nine-Nine"},
+  {t:"Terry loves yogurt breaks more than performance reviews.",c:"Terry",s:"Brooklyn Nine-Nine"},
+  {t:"I'm not tired, I'm just conserving energy for later naps.",c:"Gina",s:"Brooklyn Nine-Nine"},
+
+  {t:"I'm not superstitious, but I am a little stitious about Mondays.",c:"Michael Scott",s:"The Office"},
+  {t:"If an idiot would nap at their desk, I refuse to nap.",c:"Dwight Schrute",s:"The Office"},
+  {t:"Half my job is staying awake through Dwight's presentations.",c:"Jim Halpert",s:"The Office"},
+  {t:"I used to think paper was boring, then I met deadlines.",c:"Pam Beesly",s:"The Office"},
+  {t:"I start explaining a spreadsheet and lose myself somewhere around row twelve.",c:"Kevin Malone",s:"The Office"},
+  {t:"I graduated from the best business school, or so my debt suggests.",c:"Andy Bernard",s:"The Office"},
+  {t:"Bake sales are the only meetings I actually attend early.",c:"Angela",s:"The Office"},
+  {t:"I've had many jobs. I remember almost none of the training.",c:"Creed",s:"The Office"},
+  {t:"Crossword puzzles get me through every single staff meeting.",c:"Stanley",s:"The Office"},
+  {t:"I want people to love me more than they love lunch breaks.",c:"Michael Scott",s:"The Office"},
+  {t:"Bears, beets, spreadsheets, in that order of importance.",c:"Dwight",s:"The Office"},
+  {t:"The vending machine understands me better than most coworkers.",c:"Jim",s:"The Office"},
+  {t:"It's been a long week. Every week is a long week.",c:"Meredith",s:"The Office"},
+  {t:"Nobody's ever happy to see HR, especially not before coffee.",c:"Toby",s:"The Office"},
+  {t:"Every meeting is basically a party I forgot to plan.",c:"Michael Scott",s:"The Office"},
+
+  {t:"I have two jobs, zero savings, and one working brain cell.",c:"Max Black",s:"2 Broke Girls"},
+  {t:"I lost my fortune, but I never miss a coffee break.",c:"Caroline Channing",s:"2 Broke Girls"},
+  {t:"Cupcakes are cheaper than therapy and taste way better.",c:"Max",s:"2 Broke Girls"},
+  {t:"I once ran a company. Now I just run on caffeine.",c:"Caroline",s:"2 Broke Girls"},
+  {t:"My whole life is one long unpaid group project.",c:"Max",s:"2 Broke Girls"},
+  {t:"I nap loudly so everyone respects my schedule.",c:"Sophie",s:"2 Broke Girls"},
+  {t:"I run this diner tired, understaffed, and somehow on time.",c:"Han",s:"2 Broke Girls"},
+  {t:"Lunch breaks are sacred, everything else is negotiable.",c:"Oleg",s:"2 Broke Girls"},
+  {t:"Cupcakes fix everything except my actual bank account.",c:"Max",s:"2 Broke Girls"},
+  {t:"Group projects taught me more about betrayal than college did.",c:"Caroline",s:"2 Broke Girls"},
+  {t:"I studied a little, ate a lot, still passed somehow.",c:"Sophie",s:"2 Broke Girls"},
+  {t:"Trust issues and free coffee refills, that's my whole personality.",c:"Max",s:"2 Broke Girls"},
+  {t:"I run this diner like a lecture hall, mostly ignored.",c:"Han",s:"2 Broke Girls"},
+  {t:"I used to date senators, now I date my nap schedule.",c:"Caroline",s:"2 Broke Girls"},
+  {t:"We're broke, tired, and still showed up. That's basically a degree.",c:"Max",s:"2 Broke Girls"},
+];
+
+/* ---------------- State ---------------- */
+let state = { subjects:{}, tests:[], updatedAt:0 };
+let sb = null;
+let sbConfig = { url:"", key:"" };
+
+function todayISO(d){ d=d||new Date(); return d.toISOString().slice(0,10); }
+function fmtDate(iso){ if(!iso) return ""; const [y,m,d]=iso.split("-"); return d+"/"+m+"/"+y.slice(2); }
+function addDays(iso,n){ const d=new Date(iso+"T00:00:00"); d.setDate(d.getDate()+n); return todayISO(d); }
+function daysUntil(iso){ const now=new Date(); now.setHours(0,0,0,0); const d=new Date(iso+"T00:00:00"); return Math.round((d-now)/86400000); }
+
+function generateClassDates(subject){
+  const dayMap={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
+  const start=new Date(TERM_START+"T00:00:00");
+  const end=new Date(TERM_END+"T23:59:59");
+  const out=[];
+  let cur=new Date(start);
+  while(cur<=end && out.length<20){
+    const dow=cur.getDay();
+    const sess=subject.sessions.find(s=>dayMap[s.day]===dow);
+    if(sess) out.push({date:todayISO(cur),day:sess.day,time:sess.time,room:sess.room});
+    cur.setDate(cur.getDate()+1);
+  }
+  return out;
+}
+
+function buildDefaultSubjectState(subject){
+  return generateClassDates(subject).map((c,i)=>({
+    classNumber:i+1, phase: i<10?"Pre-Mid":"Post-Mid",
+    date:c.date, day:c.day, time:c.time, room:c.room,
+    status:null, markedAt:null, notes:"", photo:null
+  }));
+}
+
+function initState(){
+  const saved = localStorage.getItem("attendmdi_state_v1");
+  let parsed = saved ? JSON.parse(saved) : null;
+  state = parsed || { subjects:{}, tests:[], updatedAt:0 };
+  SUBJECTS.forEach(subj=>{
+    const fresh = buildDefaultSubjectState(subj);
+    if(!state.subjects[subj.code]){
+      state.subjects[subj.code] = fresh;
+    } else {
+      // overlay saved marks onto freshly-generated dates by classNumber
+      const savedArr = state.subjects[subj.code];
+      state.subjects[subj.code] = fresh.map(f=>{
+        const match = savedArr.find(x=>x.classNumber===f.classNumber);
+        return match ? {...f, status:match.status, markedAt:match.markedAt, notes:match.notes||"", photo:match.photo||null,
+          date: match.date||f.date, time: (match.time!==undefined?match.time:f.time), room: (match.room!==undefined?match.room:f.room)} : f;
+      });
+    }
+  });
+  if(!state.tests) state.tests=[];
+  if(!state.rooms) state.rooms={};
+  SUBJECTS.forEach(subj=>{
+    subj.sessions.forEach((s,i)=>{
+      const key=subj.code+"_"+i;
+      if(state.rooms[key]!==undefined) s.room=state.rooms[key];
+      else if(/not specified/i.test(s.room)) s.room="";
+    });
+  });
+  SUBJECTS.forEach(subj=>{
+    const classes=state.subjects[subj.code];
+    const c10=classes.find(c=>c.classNumber===10), c20=classes.find(c=>c.classNumber===20);
+    const midId="auto-mid-"+subj.code, endId="auto-end-"+subj.code;
+    if(c10 && !state.tests.find(t=>t.id===midId)){
+      state.tests.push({id:midId, subjectCode:subj.code, type:"Mid Term", title:subj.code+" Mid Term",
+        date:addDays(c10.date,7), mode:"Individual", groupMembers:"", marks:"", notes:"Date is a placeholder — edit once the faculty confirms.", done:false});
+    }
+    if(c20 && !state.tests.find(t=>t.id===endId)){
+      state.tests.push({id:endId, subjectCode:subj.code, type:"End Term", title:subj.code+" End Term",
+        date:addDays(c20.date,7), mode:"Individual", groupMembers:"", marks:"", notes:"Date is a placeholder — edit once the faculty confirms.", done:false});
+    }
+  });
+  const sc = localStorage.getItem("attendmdi_sb_config");
+  if(sc) sbConfig = JSON.parse(sc);
+}
+
+function persistLocal(){
+  state.updatedAt = Date.now();
+  localStorage.setItem("attendmdi_state_v1", JSON.stringify(state));
+  syncToSupabase();
+}
+
+/* ---------------- Supabase sync ---------------- */
+function setSyncStatus(mode){
+  const dot=document.getElementById("syncDot"), label=document.getElementById("syncLabel");
+  dot.className="sync-dot "+(mode||"");
+  label.textContent = mode==="synced"?"synced": mode==="syncing"?"syncing": mode==="error"?"error":"local";
+}
+
+function initSupabase(){
+  if(sbConfig.url && sbConfig.key && window.supabase){
+    try{
+      sb = window.supabase.createClient(sbConfig.url, sbConfig.key);
+      pullFromSupabase();
+    }catch(e){ sb=null; setSyncStatus("error"); }
+  } else {
+    setSyncStatus("");
+  }
+}
+
+async function pullFromSupabase(){
+  if(!sb) return;
+  setSyncStatus("syncing");
+  try{
+    const {data,error} = await sb.from("attendmdi_state").select("*").eq("id",ROW_ID).maybeSingle();
+    if(error) throw error;
+    if(data && data.data && (data.updated_at ? new Date(data.updated_at).getTime() : 0) > state.updatedAt){
+      state = data.data;
+      localStorage.setItem("attendmdi_state_v1", JSON.stringify(state));
+      renderAll();
+    } else {
+      await syncToSupabase(true);
+    }
+    setSyncStatus("synced");
+  }catch(e){ setSyncStatus("error"); }
+}
+
+let syncDebounce=null;
+function syncToSupabase(immediate){
+  if(!sb) return;
+  if(syncDebounce) clearTimeout(syncDebounce);
+  const run=async()=>{
+    setSyncStatus("syncing");
+    try{
+      const {error}=await sb.from("attendmdi_state").upsert({id:ROW_ID, data:state, updated_at:new Date().toISOString()});
+      if(error) throw error;
+      setSyncStatus("synced");
+    }catch(e){ setSyncStatus("error"); }
+  };
+  if(immediate) run(); else syncDebounce=setTimeout(run,900);
+}
+
+/* ---------------- Quotes ---------------- */
+function daysSinceEpoch(d){ return Math.floor(d.getTime()/86400000); }
+function renderQuote(){
+  const idx = daysSinceEpoch(new Date()) % QUOTES.length;
+  const q = QUOTES[idx];
+  document.getElementById("quoteText").textContent = '"'+q.t+'"';
+}
+
+/* ---------------- Tabs ---------------- */
+let activeTab="overview";
+function tabDefs(){
+  return [
+    {id:"overview",label:"📊 Overview"},
+    {id:"next",label:"📅 Next Classes"},
+    {id:"reminders",label:"🔔 Reminders"},
+    ...SUBJECTS.map(s=>({id:"subj-"+s.code,label:s.code}))
+  ];
+}
+function reminderCountWithin(days){
+  const now=new Date(); now.setHours(0,0,0,0);
+  return state.tests.filter(t=>{
+    if(t.done) return false;
+    const d=new Date(t.date+"T00:00:00");
+    const diff=(d-now)/86400000;
+    return diff<=days;
+  }).length;
+}
+function reminderCountForSubject(code,days){
+  const now=new Date(); now.setHours(0,0,0,0);
+  return state.tests.filter(t=>{
+    if(t.subjectCode!==code || t.done) return false;
+    const d=new Date(t.date+"T00:00:00");
+    const diff=(d-now)/86400000;
+    return diff<=days;
+  }).length;
+}
+function renderTabs(){
+  const nav=document.getElementById("tabsNav");
+  nav.innerHTML="";
+  tabDefs().forEach(t=>{
+    const btn=document.createElement("button");
+    btn.className="tab-btn"+(activeTab===t.id?" active":"");
+    btn.textContent=t.label;
+    let badgeCount=0;
+    if(t.id==="reminders") badgeCount=reminderCountWithin(3);
+    if(t.id.startsWith("subj-")) badgeCount=reminderCountForSubject(t.id.replace("subj-",""),7);
+    if(badgeCount>0){
+      const b=document.createElement("span"); b.className="tab-badge"; b.textContent=badgeCount;
+      btn.appendChild(b);
+    }
+    btn.onclick=()=>{ activeTab=t.id; renderAll(); };
+    nav.appendChild(btn);
+  });
+}
+
+/* ---------------- Overview ---------------- */
+function subjectStats(code){
+  const classes=state.subjects[code];
+  const attended=classes.filter(c=>c.status==="attended").length;
+  const missed=classes.filter(c=>c.status==="missed").length;
+  const need=Math.max(0,16-attended);
+  const canMiss=Math.max(0,4-missed);
+  return {attended,missed,need,canMiss,total:classes.length};
+}
+function renderOverview(){
+  const body=document.getElementById("ovBody");
+  body.innerHTML="";
+  SUBJECTS.forEach(subj=>{
+    const st=subjectStats(subj.code);
+    const tr=document.createElement("tr");
+    tr.className="ov-row";
+    let pillClass="ok"; if(st.canMiss<=1) pillClass="warn"; if(st.canMiss<=0 && st.need>0) pillClass="bad";
+    const pending = state.tests.filter(t=>t.subjectCode===subj.code && !t.done && daysUntil(t.date)<=30).length;
+    tr.innerHTML=`<td><strong>${subj.code}</strong><div class="muted">${subj.name}</div></td>
+      <td>${st.attended}/20</td><td>${st.missed}</td><td>${st.need}</td>
+      <td><span class="pill ${pillClass}">${st.canMiss}</span></td>
+      <td><span class="pill ${pending>0?'warn':'ok'}">${pending}</span></td>`;
+    tr.onclick=()=>{ activeTab="subj-"+subj.code; renderAll(); };
+    body.appendChild(tr);
+  });
+}
+
+/* ---------------- Next 7 days ---------------- */
+function renderNext(){
+  const list=document.getElementById("nextList");
+  list.innerHTML="";
+  const now=new Date(); now.setHours(0,0,0,0);
+  const items=[];
+  SUBJECTS.forEach(subj=>{
+    state.subjects[subj.code].forEach(c=>{
+      const d=new Date(c.date+"T00:00:00");
+      const diff=(d-now)/86400000;
+      if(diff>=0 && diff<=7) items.push({subj,cls:c,diff});
+    });
+  });
+  items.sort((a,b)=>a.diff-b.diff);
+  if(items.length===0){
+    list.innerHTML='<div class="empty-state">No classes in the next 7 days.</div>';
+    return;
+  }
+  items.forEach(it=>{
+    const st=subjectStats(it.subj.code);
+    let statusLabel = st.canMiss<=0 ? "Cannot miss" : st.canMiss+" misses left";
+    if(it.cls.status) statusLabel = it.cls.status==="attended"?"Attended":"Missed";
+    const div=document.createElement("div");
+    div.className="list-item";
+    div.innerHTML=`<div class="li-left">
+        <div class="li-title">${it.diff===0?'<span class="today-tag">TODAY</span>':''}${it.subj.code} — ${fmtDate(it.cls.date)} (${it.cls.day}) ${it.cls.time}</div>
+        <div class="li-sub">${it.cls.room || "Location not set"}</div>
+      </div>
+      <span class="li-status" style="background:${it.cls.status==='attended'?'var(--green-bg)':it.cls.status==='missed'?'var(--red-bg)':'var(--bg)'};color:${it.cls.status==='attended'?'var(--green)':it.cls.status==='missed'?'var(--red)':'var(--muted)'}">${statusLabel}</span>`;
+    div.onclick=()=> openClassModal(it.subj.code, it.cls.classNumber);
+    list.appendChild(div);
+  });
+}
+
+/* ---------------- Reminders ---------------- */
+function renderReminders(){
+  const list=document.getElementById("remindersList");
+  list.innerHTML="";
+  const now=new Date(); now.setHours(0,0,0,0);
+  const upcoming = state.tests.filter(t=>!t.done).sort((a,b)=> new Date(a.date)-new Date(b.date));
+  if(upcoming.length===0){
+    list.innerHTML='<div class="empty-state">Nothing pending — every class test, presentation, and exam is marked done.</div>';
+    return;
+  }
+  upcoming.forEach(t=>{
+    const d=new Date(t.date+"T00:00:00");
+    const days=Math.round((d-now)/86400000);
+    const overdue = days<0;
+    const label = overdue ? "Overdue" : days===0 ? "Today" : days+"d left";
+    const div=document.createElement("div");
+    div.className="list-item";
+    div.innerHTML=`<div class="li-left">
+        <div class="li-title">${t.title||t.type}</div>
+        <div class="li-sub">${t.subjectCode} · ${t.type} · ${fmtDate(t.date)}</div>
+      </div>
+      <span class="li-status" style="background:${(overdue||days<=3)?'var(--red-bg)':'var(--amber-bg)'};color:${(overdue||days<=3)?'var(--red)':'var(--amber)'}">${label}</span>`;
+    div.onclick=()=> openTestModal(t.id);
+    list.appendChild(div);
+  });
+}
+
+/* ---------------- Subject views ---------------- */
+function renderSubjectViews(){
+  const wrap=document.getElementById("subjectViews");
+  wrap.innerHTML="";
+  SUBJECTS.forEach(subj=>{
+    const view=document.createElement("section");
+    view.className="view"; view.id="view-subj-"+subj.code;
+    const st=subjectStats(subj.code);
+    const sessLines = subj.sessions.map((s,i)=>
+      `<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;flex-wrap:wrap;">
+         <span style="min-width:150px;">${s.day} ${s.time} —</span>
+         <input class="f-input subj-room-input" data-code="${subj.code}" data-idx="${i}"
+                value="${(s.room||'').replace(/"/g,'&quot;')}"
+                placeholder="Add location"
+                style="flex:1;min-width:150px;padding:5px 8px;font-size:12px;">
+       </div>`).join("");
+    view.innerHTML=`
+      <div class="card">
+        <div class="subj-head">
+          <div>
+            <div class="subj-name">${subj.code}${subj.section?' ('+subj.section+')':''} — ${subj.name}</div>
+            <div class="subj-faculty">${subj.faculty}</div>
+          </div>
+        </div>
+        <div class="subj-sessions">${sessLines}</div>
+        <div class="stat-row">
+          <div class="stat-box"><div class="stat-num">${st.attended}</div><div class="stat-label">Attended</div></div>
+          <div class="stat-box"><div class="stat-num">${st.missed}</div><div class="stat-label">Missed</div></div>
+          <div class="stat-box"><div class="stat-num">${st.need}</div><div class="stat-label">Still need</div></div>
+          <div class="stat-box"><div class="stat-num">${st.canMiss}</div><div class="stat-label">Can still miss</div></div>
+        </div>
+        <div class="phase-label">Pre-Mid (1–10)</div>
+        <div class="class-grid" id="grid-pre-${subj.code}"></div>
+        <div class="phase-label">Post-Mid (11–20)</div>
+        <div class="class-grid" id="grid-post-${subj.code}"></div>
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <h3 class="sub-title" style="margin:0;">Tests &amp; assessments</h3>
+          <button class="btn small" data-add-test="${subj.code}">+ Add</button>
+        </div>
+        <div id="tests-${subj.code}" style="margin-top:10px;"></div>
+      </div>`;
+    wrap.appendChild(view);
+
+    const preGrid=view.querySelector("#grid-pre-"+subj.code);
+    const postGrid=view.querySelector("#grid-post-"+subj.code);
+    state.subjects[subj.code].forEach(c=>{
+      const cell=document.createElement("div");
+      cell.className="class-cell "+(c.status||"");
+      cell.innerHTML=`<div class="cnum">${c.classNumber}</div><div class="cdate">${fmtDate(c.date)}</div>`+
+        (c.notes||c.photo? '<div class="note-dot"></div>':'');
+      cell.onclick=()=>openClassModal(subj.code,c.classNumber);
+      (c.classNumber<=10?preGrid:postGrid).appendChild(cell);
+    });
+
+    const testsWrap=view.querySelector("#tests-"+subj.code);
+    const myTests=state.tests.filter(t=>t.subjectCode===subj.code).sort((a,b)=>new Date(a.date)-new Date(b.date));
+    if(myTests.length===0) testsWrap.innerHTML='<div class="empty-state">No entries yet.</div>';
+    myTests.forEach(t=>{
+      const item=document.createElement("div");
+      item.className="test-item";
+      item.innerHTML=`<div class="test-top"><span>${t.done?'✓ ':''}${t.title||t.type}</span><span>${fmtDate(t.date)}</span></div>
+        <div class="test-meta">${t.type} · ${t.mode}${t.mode==='Group'&&t.groupMembers?' — '+t.groupMembers:''}${t.marks?' · '+t.marks:''}${t.done?' · Completed':''}</div>`;
+      if(t.done) item.style.opacity="0.6";
+      item.onclick=()=>openTestModal(t.id);
+      testsWrap.appendChild(item);
+    });
+    view.querySelector("[data-add-test]").onclick=()=>openTestModal(null, subj.code);
+    view.querySelectorAll(".subj-room-input").forEach(inp=>{
+      inp.onchange=()=>{
+        const code=inp.dataset.code, idx=parseInt(inp.dataset.idx,10);
+        const val=inp.value.trim();
+        const s=SUBJECTS.find(x=>x.code===code);
+        const oldRoom=s.sessions[idx].room;
+        s.sessions[idx].room=val;
+        state.rooms[code+"_"+idx]=val;
+        // propagate to unedited class entries on that weekday
+        state.subjects[code].forEach(c=>{
+          if(c.day===s.sessions[idx].day && (!c.room || c.room===oldRoom)) c.room=val;
+        });
+        persistLocal();
+        renderAll();
+      };
+    });
+  });
+}
+
+/* ---------------- Class modal ---------------- */
+let cmContext={code:null,num:null};
+function openClassModal(code,num){
+  cmContext={code,num};
+  const subj=SUBJECTS.find(s=>s.code===code);
+  const c=state.subjects[code].find(x=>x.classNumber===num);
+  document.getElementById("cmTitle").textContent=`${code} · Class ${num} (${c.phase})`;
+  document.getElementById("cmSchedule").textContent=`Usually ${c.day}s — edit below if this session moved`;
+  document.getElementById("cmDateOverride").value=c.date;
+  document.getElementById("cmTime").value=c.time||"";
+  document.getElementById("cmRoom").value=c.room||"";
+  document.getElementById("cmNotes").value=c.notes||"";
+  document.getElementById("cmMarkedAt").textContent=c.markedAt? "Marked "+new Date(c.markedAt).toLocaleString(): "";
+  const thumb=document.getElementById("cmPhotoThumb");
+  if(c.photo){ thumb.src=c.photo; thumb.classList.add("show"); } else { thumb.classList.remove("show"); thumb.src=""; }
+  document.getElementById("cmBtnAttended").classList.toggle("active", c.status==="attended");
+  document.getElementById("cmBtnMissed").classList.toggle("active", c.status==="missed");
+  document.getElementById("classModal").classList.add("show");
+}
+function closeClassModal(){ document.getElementById("classModal").classList.remove("show"); }
+document.getElementById("cmClose").onclick=closeClassModal;
+document.getElementById("classModal").addEventListener("click",e=>{ if(e.target.id==="classModal") closeClassModal(); });
+
+let pendingStatus=undefined;
+document.getElementById("cmBtnAttended").onclick=()=>setPendingStatus("attended");
+document.getElementById("cmBtnMissed").onclick=()=>setPendingStatus("missed");
+document.getElementById("cmBtnClear").onclick=()=>setPendingStatus(null);
+function setPendingStatus(s){
+  pendingStatus=s;
+  document.getElementById("cmBtnAttended").classList.toggle("active", s==="attended");
+  document.getElementById("cmBtnMissed").classList.toggle("active", s==="missed");
+}
+document.getElementById("cmPhotoInput").onchange=(e)=>{
+  const file=e.target.files[0];
+  if(!file) return;
+  const img=new Image();
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    img.onload=()=>{
+      const maxW=800;
+      const scale=Math.min(1,maxW/img.width);
+      const canvas=document.createElement("canvas");
+      canvas.width=img.width*scale; canvas.height=img.height*scale;
+      canvas.getContext("2d").drawImage(img,0,0,canvas.width,canvas.height);
+      const dataUrl=canvas.toDataURL("image/jpeg",0.7);
+      const thumb=document.getElementById("cmPhotoThumb");
+      thumb.src=dataUrl; thumb.classList.add("show");
+      thumb.dataset.pending=dataUrl;
+    };
+    img.src=ev.target.result;
+  };
+  reader.readAsDataURL(file);
+};
+document.getElementById("cmRemovePhoto").onclick=()=>{
+  const thumb=document.getElementById("cmPhotoThumb");
+  thumb.src=""; thumb.classList.remove("show"); thumb.dataset.pending="__remove__";
+};
+document.getElementById("cmSave").onclick=()=>{
+  const c=state.subjects[cmContext.code].find(x=>x.classNumber===cmContext.num);
+  const newDate=document.getElementById("cmDateOverride").value;
+  if(newDate) c.date=newDate;
+  c.time=document.getElementById("cmTime").value;
+  c.room=document.getElementById("cmRoom").value;
+  c.notes=document.getElementById("cmNotes").value;
+  if(pendingStatus!==undefined){
+    c.status=pendingStatus;
+    c.markedAt = pendingStatus? new Date().toISOString() : null;
+  }
+  const thumb=document.getElementById("cmPhotoThumb");
+  if(thumb.dataset.pending==="__remove__") c.photo=null;
+  else if(thumb.dataset.pending) c.photo=thumb.dataset.pending;
+  delete thumb.dataset.pending;
+  pendingStatus=undefined;
+  persistLocal();
+  closeClassModal();
+  renderAll();
+};
+
+/* ---------------- Test modal ---------------- */
+let tmEditingId=null;
+function openTestModal(id, presetSubject){
+  tmEditingId=id;
+  const subjSel=document.getElementById("tmSubject");
+  subjSel.innerHTML=SUBJECTS.map(s=>`<option value="${s.code}">${s.code} — ${s.name}</option>`).join("");
+  const typeSel=document.getElementById("tmType");
+  const customInput=document.getElementById("tmTypeCustom");
+  customInput.style.display="none"; customInput.value="";
+  document.getElementById("tmGroupWrap").style.display="none";
+  document.getElementById("tmDelete").style.display=id?"block":"none";
+
+  if(id){
+    const t=state.tests.find(x=>x.id===id);
+    subjSel.value=t.subjectCode;
+    const knownTypes=["Class test","Project","Viva","Assignment"];
+    if(knownTypes.includes(t.type)){ typeSel.value=t.type; } else { typeSel.value="__custom"; customInput.style.display="block"; customInput.value=t.type; }
+    document.getElementById("tmTitle").value=t.title||"";
+    document.getElementById("tmDate").value=t.date;
+    document.getElementById("tmMode").value=t.mode;
+    if(t.mode==="Group"){ document.getElementById("tmGroupWrap").style.display="block"; document.getElementById("tmGroupMembers").value=t.groupMembers||""; }
+    document.getElementById("tmMarks").value=t.marks||"";
+    document.getElementById("tmNotes").value=t.notes||"";
+    document.getElementById("tmDone").checked=!!t.done;
+  } else {
+    if(presetSubject) subjSel.value=presetSubject;
+    typeSel.value="Class test";
+    document.getElementById("tmTitle").value="";
+    document.getElementById("tmDate").value=todayISO();
+    document.getElementById("tmMode").value="Individual";
+    document.getElementById("tmGroupMembers").value="";
+    document.getElementById("tmMarks").value="";
+    document.getElementById("tmNotes").value="";
+    document.getElementById("tmDone").checked=false;
+  }
+  document.getElementById("testModal").classList.add("show");
+}
+function closeTestModal(){ document.getElementById("testModal").classList.remove("show"); }
+document.getElementById("tmClose").onclick=closeTestModal;
+document.getElementById("testModal").addEventListener("click",e=>{ if(e.target.id==="testModal") closeTestModal(); });
+document.getElementById("tmType").onchange=(e)=>{
+  document.getElementById("tmTypeCustom").style.display = e.target.value==="__custom"?"block":"none";
+};
+document.getElementById("tmMode").onchange=(e)=>{
+  document.getElementById("tmGroupWrap").style.display = e.target.value==="Group"?"block":"none";
+};
+document.getElementById("tmSave").onclick=()=>{
+  const typeSel=document.getElementById("tmType").value;
+  const type = typeSel==="__custom" ? (document.getElementById("tmTypeCustom").value||"Other") : typeSel;
+  const entry={
+    id: tmEditingId || ("t"+Date.now()),
+    subjectCode: document.getElementById("tmSubject").value,
+    type, title:document.getElementById("tmTitle").value,
+    date:document.getElementById("tmDate").value,
+    mode:document.getElementById("tmMode").value,
+    groupMembers:document.getElementById("tmGroupMembers").value,
+    marks:document.getElementById("tmMarks").value,
+    notes:document.getElementById("tmNotes").value,
+    done:document.getElementById("tmDone").checked,
+  };
+  if(tmEditingId){
+    const i=state.tests.findIndex(x=>x.id===tmEditingId);
+    state.tests[i]=entry;
+  } else {
+    state.tests.push(entry);
+  }
+  persistLocal();
+  closeTestModal();
+  renderAll();
+};
+document.getElementById("tmDelete").onclick=()=>{
+  state.tests = state.tests.filter(x=>x.id!==tmEditingId);
+  persistLocal();
+  closeTestModal();
+  renderAll();
+};
+document.getElementById("addTestGlobalBtn").onclick=()=>openTestModal(null);
+
+/* ---------------- Settings modal ---------------- */
+document.getElementById("settingsBtn").onclick=()=>{
+  document.getElementById("sbUrl").value=sbConfig.url||"";
+  document.getElementById("sbKey").value=sbConfig.key||"";
+  document.getElementById("settingsModal").classList.add("show");
+};
+document.getElementById("smClose").onclick=()=>document.getElementById("settingsModal").classList.remove("show");
+document.getElementById("settingsModal").addEventListener("click",e=>{ if(e.target.id==="settingsModal") e.currentTarget.classList.remove("show"); });
+document.getElementById("sbConnect").onclick=()=>{
+  sbConfig={url:document.getElementById("sbUrl").value.trim(), key:document.getElementById("sbKey").value.trim()};
+  localStorage.setItem("attendmdi_sb_config", JSON.stringify(sbConfig));
+  initSupabase();
+  document.getElementById("settingsModal").classList.remove("show");
+};
+document.getElementById("sbDisconnect").onclick=()=>{
+  sbConfig={url:"",key:""};
+  localStorage.removeItem("attendmdi_sb_config");
+  sb=null; setSyncStatus("");
+  document.getElementById("settingsModal").classList.remove("show");
+};
+
+/* ---------------- Add-to-home banner (iOS only) ---------------- */
+(function(){
+  const isIOS = /iP(hone|od|ad)/.test(navigator.userAgent);
+  const isStandalone = window.navigator.standalone;
+  const dismissed = localStorage.getItem("attendmdi_ath_dismissed");
+  if(isIOS && !isStandalone && !dismissed){
+    document.getElementById("athBanner").classList.add("show");
+  }
+  document.getElementById("athClose").onclick=()=>{
+    document.getElementById("athBanner").classList.remove("show");
+    localStorage.setItem("attendmdi_ath_dismissed","1");
+  };
+})();
+
+/* ---------------- Master render ---------------- */
+function renderAll(){
+  renderTabs();
+  renderOverview();
+  renderNext();
+  renderReminders();
+  renderSubjectViews();
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  const activeEl=document.getElementById("view-"+activeTab);
+  if(activeEl) activeEl.classList.add("active");
+}
+
+initState();
+renderQuote();
+initSupabase();
+renderAll();
+</script>
+</body>
+</html>
