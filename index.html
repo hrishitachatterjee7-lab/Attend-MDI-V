@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="AttendMDI">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -12,8 +12,8 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f2f5;color:#1a1a2e;min-height:100vh}
-header{background:#1a1a2e;color:#fff;padding:.85rem 1.25rem;padding-top:max(.85rem,env(safe-area-inset-top));position:-webkit-sticky;position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:10px}
-.header-logo{width:32px;height:32px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#1a1a2e;flex-shrink:0;letter-spacing:-.5px}
+header{background:#031f50;color:#fff;padding:.85rem 1.25rem;padding-top:max(.85rem,env(safe-area-inset-top));position:-webkit-sticky;position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:10px}
+.header-logo{width:32px;height:32px;border-radius:50%;background:#fff;object-fit:contain;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#1a1a2e;letter-spacing:-.5px}
 .header-title{flex:1}
 .header-title h1{font-size:15px;font-weight:700;line-height:1.1}
 .header-title p{font-size:10px;color:#8b9bb4;margin-top:1px}
@@ -23,7 +23,7 @@ header{background:#1a1a2e;color:#fff;padding:.85rem 1.25rem;padding-top:max(.85r
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 .quote-bar{background:#fff;border-bottom:1px solid #e5e7eb;padding:10px 1.25rem;display:flex;align-items:center;gap:10px}
 .quote-icon{font-size:18px;flex-shrink:0}
-.quote-text{font-size:12px;color:#374151;font-style:italic;line-height:1.4}
+.quote-text{font-size:12px;color:#374151;line-height:1.4}
 .quote-credit{font-size:10px;color:#9ca3af;margin-top:2px}
 .ios-banner{background:#6366f1;color:#fff;text-align:center;padding:9px 1rem;font-size:12px;font-weight:500;display:none}
 .ios-banner button{background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:5px;padding:2px 8px;cursor:pointer;font-size:11px;margin-left:8px}
@@ -31,7 +31,7 @@ header{background:#1a1a2e;color:#fff;padding:.85rem 1.25rem;padding-top:max(.85r
 .tabs{display:flex;gap:5px;flex-wrap:nowrap;overflow-x:auto;margin-bottom:1.1rem;padding-bottom:2px;-webkit-overflow-scrolling:touch}
 .tabs::-webkit-scrollbar{display:none}
 .tab{padding:6px 13px;border:1.5px solid #d1d5db;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;background:#fff;color:#6b7280;white-space:nowrap;-webkit-tap-highlight-color:transparent;touch-action:manipulation;flex-shrink:0;position:relative}
-.tab.active{background:#1a1a2e;color:#fff;border-color:#1a1a2e}
+.tab.active{background:#031f50;color:#fff;border-color:#031f50}
 .tab.special{border-color:#6366f1;color:#6366f1}
 .tab.special.active{background:#6366f1;border-color:#6366f1;color:#fff}
 .tab .badge{position:absolute;top:-5px;right:-5px;background:#dc2626;color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:10px;min-width:16px;text-align:center}
@@ -120,7 +120,7 @@ table.tests tr:last-child td{border-bottom:none}
 .modal textarea{resize:vertical;min-height:80px;font-size:14px}
 .btn-row{display:flex;gap:8px;margin-top:1rem}
 .btn{padding:11px 18px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;border:1.5px solid #e5e7eb;background:#fff;color:#374151;font-family:inherit;-webkit-tap-highlight-color:transparent;touch-action:manipulation;flex:1}
-.btn.primary{background:#1a1a2e;color:#fff;border-color:#1a1a2e}
+.btn.primary{background:#031f50;color:#fff;border-color:#031f50}
 .btn.purple{background:#6366f1;color:#fff;border-color:#6366f1}
 .status-row{display:flex;gap:6px;margin-top:4px}
 .status-opt{flex:1;padding:10px 4px;border:1.5px solid #e5e7eb;border-radius:9px;text-align:center;cursor:pointer;font-size:12px;font-weight:600;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
@@ -141,19 +141,100 @@ table.tests tr:last-child td{border-bottom:none}
   .mini-bar{display:none}
   .ov-table td:nth-child(5),.ov-table th:nth-child(5),.ov-table td:nth-child(6),.ov-table th:nth-child(6){display:none}
 }
+@media(prefers-color-scheme:dark){
+  body{background:#0f1117;color:#e5e7eb}
+  header{background:#031f50}
+  .quote-bar{background:#1a1d27;border-color:#2a2d3a}
+  .quote-text{color:#e5e7eb}
+  .quote-credit{color:#6b7280}
+  .ios-banner{background:#1a1d27}
+  .container{}
+  .tab{background:#1a1d27;border-color:#2a2d3a;color:#9ca3af}
+  .tab.active{background:#e5e7eb;color:#0f1117;border-color:#e5e7eb}
+  .tab.special{border-color:#818cf8;color:#818cf8}
+  .tab.special.active{background:#6366f1;color:#fff;border-color:#6366f1}
+  .stat{background:#1a1d27;border-color:#2a2d3a}
+  .stat-label{color:#6b7280}
+  .progress-bar{background:#2a2d3a}
+  .section-label{color:#6b7280}
+  .cls-cell{background:#1a1d27;border-color:#2a2d3a}
+  .cls-cell.attended{background:#052e16;border-color:#15803d}
+  .cls-cell.missed{background:#2d0a0a;border-color:#b91c1c}
+  .cls-num{color:#6b7280}
+  .cls-dot{background:#2a2d3a;border-color:#374151}
+  .cls-date{color:#6b7280}
+  .cls-time-stamp{color:#7c6fd1}
+  .divider{background:#2a2d3a}
+  .add-btn{background:#1a1d27;border-color:#374151;color:#9ca3af}
+  .add-btn:active{background:#2a2d3a}
+  table.tests{background:#1a1d27;border-color:#2a2d3a}
+  table.tests th{background:#111318;color:#6b7280;border-color:#2a2d3a}
+  table.tests td{border-color:#1f2230;color:#e5e7eb}
+  table.tests tr:hover td{background:#1f2230}
+  .del-btn{color:#374151}
+  .empty{color:#6b7280}
+  .ov-table{background:#1a1d27;border-color:#2a2d3a}
+  .ov-table th{background:#111318;color:#6b7280;border-color:#2a2d3a}
+  .ov-table td{border-color:#1f2230;color:#e5e7eb}
+  .ov-table tbody tr:hover td{background:#1f2230}
+  .mini-bar{background:#2a2d3a}
+  .next-card{background:#1a1d27;border-color:#2a2d3a}
+  .next-card:active{background:#1f2230}
+  .next-card.today-card{background:#12142a;border-color:#6366f1}
+  .next-subj{color:#e5e7eb}
+  .next-sub{color:#6b7280}
+  .rem-card{background:#1a1d27;border-color:#2a2d3a}
+  .rem-card.urgent{background:#1f0a0a;border-color:#b91c1c}
+  .rem-card.soon{background:#1f1600;border-color:#92400e}
+  .rem-title{color:#e5e7eb}
+  .rem-sub{color:#6b7280}
+  .rem-date{color:#6b7280}
+  .modal{background:#1a1d27}
+  .modal-handle{background:#2a2d3a}
+  .modal h3{color:#e5e7eb}
+  .modal label{color:#9ca3af}
+  .modal input,.modal select,.modal textarea{background:#111318;border-color:#2a2d3a;color:#e5e7eb}
+  .modal input:focus,.modal select:focus,.modal textarea:focus{border-color:#6366f1}
+  .modal p{color:#9ca3af}
+  .btn{background:#1a1d27;border-color:#2a2d3a;color:#e5e7eb}
+  .btn.primary{background:#e5e7eb;color:#0f1117;border-color:#e5e7eb}
+  .btn.purple{background:#6366f1;color:#fff;border-color:#6366f1}
+  .status-opt{border-color:#2a2d3a;color:#9ca3af}
+  .status-opt.sel-attended{background:#052e16;border-color:#15803d;color:#4ade80}
+  .status-opt.sel-missed{background:#2d0a0a;border-color:#b91c1c;color:#f87171}
+  .status-opt.sel-none{background:#12142a;border-color:#6366f1;color:#818cf8}
+  .photo-add{border-color:#374151;color:#6b7280}
+  .photo-thumb{border-color:#2a2d3a}
+  .timestamp-lbl{color:#6b7280}
+  .setup-steps li{color:#9ca3af}
+  .sub-header h2{color:#e5e7eb}
+  .sub-header p{color:#6b7280}
+  .header-logo{background:#e5e7eb;color:#0f1117}
+  .sync-status{color:#6b7280}
+  .next-day-label{color:#6b7280}
+  .badge.test{background:#422006;color:#fcd34d}
+  .badge.project{background:#052e16;color:#4ade80}
+  .badge.viva{background:#2d0a2a;color:#f0abfc}
+  .badge.assignment{background:#0c1f2d;color:#7dd3fc}
+  .badge.presentation{background:#1a0d2e;color:#c4b5fd}
+  .badge.midterm{background:#2d1a06;color:#fdba74}
+  .badge.endterm{background:#2d0a0a;color:#fca5a5}
+  .badge.group{background:#0c1a2d;color:#93c5fd}
+  .badge.individual{background:#1a0d2e;color:#c4b5fd}
+}
 </style>
 </head>
 <body>
- 
+
 <div class="ios-banner" id="ios-banner">
   📲 Tap <strong>Share</strong> → <strong>Add to Home Screen</strong> for the full app experience
   <button onclick="document.getElementById('ios-banner').style.display='none'">✕</button>
 </div>
- 
+
 <header>
-  <div class="header-logo">MDI</div>
+  <div style="width:40px;height:40px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:3px"><img src="data:image/png;base64,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" style="width:34px;height:34px;border-radius:50%;object-fit:contain" alt="MDI Gurgaon"></div>
   <div class="header-title">
-    <h1>AttendMDI</h1>
+    <h1>AttendMDI <span style="font-weight:700;opacity:.9;font-size:15px">V</span></h1>
     <p>Term 5 · PGDM Finance</p>
   </div>
   <div class="sync-status" id="sync-status" onclick="openSetup()">
@@ -161,20 +242,20 @@ table.tests tr:last-child td{border-bottom:none}
     <span id="sync-label">Connect</span>
   </div>
 </header>
- 
+
 <div class="quote-bar" id="quote-bar">
-  <div class="quote-icon">💬</div>
+  <div class="quote-icon">📚</div>
   <div>
-    <div class="quote-text" id="quote-text">Loading quote...</div>
+    <div class="quote-text" id="quote-text">Loading...</div>
     <div class="quote-credit" id="quote-credit"></div>
   </div>
 </div>
- 
+
 <div class="container">
   <div class="tabs" id="tabs"></div>
   <div id="panels"></div>
 </div>
- 
+
 <!-- Setup modal -->
 <div class="modal-overlay hidden" id="setup-overlay">
   <div class="modal">
@@ -204,7 +285,7 @@ table.tests tr:last-child td{border-bottom:none}
     </div>
   </div>
 </div>
- 
+
 <!-- Class modal -->
 <div class="modal-overlay hidden" id="cls-overlay">
   <div class="modal">
@@ -232,7 +313,7 @@ table.tests tr:last-child td{border-bottom:none}
     </div>
   </div>
 </div>
- 
+
 <!-- Assessment modal -->
 <div class="modal-overlay hidden" id="test-overlay">
   <div class="modal">
@@ -273,88 +354,66 @@ table.tests tr:last-child td{border-bottom:none}
     </div>
   </div>
 </div>
- 
+
 <script>
-// ── QUOTES ────────────────────────────────────────────────
+// ── SUGGESTIONS ──────────────────────────────────────────
 const QUOTES=[
-  {q:"I am running away from my responsibilities. And it feels good.",ch:"Michael Scott",show:"The Office"},
-  {q:"Would I rather be feared or loved? Easy. Both. I want people to be afraid of how much they love me.",ch:"Michael Scott",show:"The Office"},
-  {q:"How the turntable.",ch:"Michael Scott",show:"The Office"},
-  {q:"I'm not superstitious, but I am a little stitious.",ch:"Michael Scott",show:"The Office"},
-  {q:"Wikipedia is the best thing ever. Anyone in the world can write anything they want about any subject. So you know you are getting the best possible information.",ch:"Michael Scott",show:"The Office"},
-  {q:"I love inside jokes. I hope to be a part of one someday.",ch:"Michael Scott",show:"The Office"},
-  {q:"I knew exactly what to do. But in a much more real sense, I had no idea what to do.",ch:"Michael Scott",show:"The Office"},
-  {q:"Sometimes I'll start a sentence and I don't even know where it's going. I just hope I find it along the way.",ch:"Michael Scott",show:"The Office"},
-  {q:"Do I need to be liked? Absolutely not. I like to be liked. I enjoy being liked. I have to be liked. But it's not like this compulsive need to be liked.",ch:"Michael Scott",show:"The Office"},
-  {q:"I hate so much about the things that you choose to be.",ch:"Michael Scott",show:"The Office"},
-  {q:"An office is for not dying. An office is a place to live life to the fullest, to the max.",ch:"Michael Scott",show:"The Office"},
-  {q:"The worst thing about prison was the Dementors.",ch:"Michael Scott",show:"The Office"},
-  {q:"Fool me once, strike one. Fool me twice, strike three.",ch:"Michael Scott",show:"The Office"},
-  {q:"I am Beyoncé, always.",ch:"Michael Scott",show:"The Office"},
-  {q:"I have been trying to get on jury duty every year since I was 18 years old. To get to that package of Oreos.",ch:"Dwight Schrute",show:"The Office"},
-  {q:"Monday through Wednesday I give myself a sponge bath using a different animal-shaped sponge each day.",ch:"Dwight Schrute",show:"The Office"},
-  {q:"Security is not something you feel. Security is something you know.",ch:"Jake Peralta",show:"Brooklyn Nine-Nine"},
-  {q:"Cool, cool, cool, cool, cool. No doubt, no doubt, no doubt.",ch:"Jake Peralta",show:"Brooklyn Nine-Nine"},
-  {q:"I wasn't hurt that badly. The doctor said all my bleeding was internal. That's where the blood's supposed to be.",ch:"Jake Peralta",show:"Brooklyn Nine-Nine"},
-  {q:"Noice. Smort.",ch:"Jake Peralta",show:"Brooklyn Nine-Nine"},
-  {q:"I've only slept nine hours in the last four days. How are you fine?",ch:"Jake Peralta",show:"Brooklyn Nine-Nine"},
-  {q:"Title of your sex tape.",ch:"Jake Peralta",show:"Brooklyn Nine-Nine"},
-  {q:"I'm the human version of the 100 emoji.",ch:"Gina Linetti",show:"Brooklyn Nine-Nine"},
-  {q:"Gina's number one rule: Gina comes first.",ch:"Gina Linetti",show:"Brooklyn Nine-Nine"},
-  {q:"I have the best ideas. I just never follow through on any of them.",ch:"Gina Linetti",show:"Brooklyn Nine-Nine"},
-  {q:"I'm not arguing. I'm just explaining why I'm right.",ch:"Amy Santiago",show:"Brooklyn Nine-Nine"},
-  {q:"I've prepared a 57-page rebuttal of your argument. In binder form.",ch:"Amy Santiago",show:"Brooklyn Nine-Nine"},
-  {q:"Every time you do something I'm not expecting, a little part of me dies.",ch:"Raymond Holt",show:"Brooklyn Nine-Nine"},
-  {q:"I have a healthy work-life balance. I just choose work.",ch:"Raymond Holt",show:"Brooklyn Nine-Nine"},
-  {q:"I'm not interested in your feeble attempts at humor.",ch:"Raymond Holt",show:"Brooklyn Nine-Nine"},
-  {q:"Everything is garbage.",ch:"Rosa Diaz",show:"Brooklyn Nine-Nine"},
-  {q:"I only cry at funerals. And once during a kitten calendar.",ch:"Rosa Diaz",show:"Brooklyn Nine-Nine"},
-  {q:"My mother cried when she dropped me off at college. Which was confusing because that's where I wanted to be.",ch:"Max Black",show:"2 Broke Girls"},
-  {q:"I'm not lazy, I'm in energy-saving mode.",ch:"Max Black",show:"2 Broke Girls"},
-  {q:"I once slept through a fire alarm because my dream was more important.",ch:"Max Black",show:"2 Broke Girls"},
-  {q:"Money can't buy happiness. But it can buy food, and that's basically the same thing.",ch:"Max Black",show:"2 Broke Girls"},
-  {q:"I don't need sleep. I need answers. And also sleep.",ch:"Max Black",show:"2 Broke Girls"},
-  {q:"I've never met a problem that cupcakes couldn't temporarily fix.",ch:"Max Black",show:"2 Broke Girls"},
-  {q:"My therapist says I have a problem with commitment. I've been meaning to call her back.",ch:"Max Black",show:"2 Broke Girls"},
-  {q:"If opportunity doesn't knock, build a door. If you can't build a door, eat a cupcake.",ch:"Max Black",show:"2 Broke Girls"},
-  {q:"I don't have a plan. I have snacks, which is basically the same thing.",ch:"Caroline Channing",show:"2 Broke Girls"},
-  {q:"Optimism is just disappointment that hasn't happened yet.",ch:"Caroline Channing",show:"2 Broke Girls"},
-  {q:"I used to have goals. Then I got a Netflix account.",ch:"Caroline Channing",show:"2 Broke Girls"},
-  {q:"Being broke is basically just a state of mind... and also a state of my bank account.",ch:"Caroline Channing",show:"2 Broke Girls"},
-  {q:"I like my coffee how I like myself: strong, sweet, and too hot for most people.",ch:"Caroline Channing",show:"2 Broke Girls"},
-  {q:"I was not drunk. I was wine-enhanced.",ch:"Alan Harper",show:"Two and a Half Men"},
-  {q:"I've hit rock bottom so many times I put in an elevator.",ch:"Charlie Harper",show:"Two and a Half Men"},
-  {q:"I don't have a drinking problem. I drink, I get drunk, I fall down. No problem.",ch:"Charlie Harper",show:"Two and a Half Men"},
-  {q:"My life is a series of naps connected by brief periods of eating.",ch:"Charlie Harper",show:"Two and a Half Men"},
-  {q:"I'm not irresponsible. I just have a different set of responsibilities.",ch:"Charlie Harper",show:"Two and a Half Men"},
-  {q:"Work is something you do, not somewhere you go. So technically I've been working from bed for years.",ch:"Alan Harper",show:"Two and a Half Men"},
-  {q:"I'm not a morning person. I'm barely an afternoon person.",ch:"Alan Harper",show:"Two and a Half Men"},
-  {q:"I don't procrastinate. I just do things in my own time. Which is later. Much later.",ch:"Alan Harper",show:"Two and a Half Men"},
-  {q:"The early bird gets the worm but the second mouse gets the cheese. I'm a second mouse person.",ch:"Charlie Harper",show:"Two and a Half Men"},
-  {q:"I didn't fail. I just found ten thousand ways that didn't work, and then I gave up.",ch:"Charlie Harper",show:"Two and a Half Men"},
-  {q:"Stress: a normal reaction to an abnormal amount of assignments.",ch:"Alan Harper",show:"Two and a Half Men"},
-  {q:"I'm not lazy. I'm on energy-saving mode until further notice.",ch:"Alan Harper",show:"Two and a Half Men"},
-  {q:"I'm multi-talented: I can talk and be annoying at the same time.",ch:"Jake Peralta",show:"Brooklyn Nine-Nine"},
-  {q:"I've achieved a perfect balance of caring deeply and not at all.",ch:"Gina Linetti",show:"Brooklyn Nine-Nine"},
-  {q:"That's what she said.",ch:"Michael Scott",show:"The Office"},
-  {q:"I am running this place like a ship. A sweet, sweet ship.",ch:"Michael Scott",show:"The Office"},
+  {q:"Thinking, Fast and Slow — Daniel Kahneman",show:"Two systems drive every decision you make. System 1 is fast, emotional, and often wrong. Essential for BFBV and equity research."},
+  {q:"The Intelligent Investor — Benjamin Graham",show:"The bible of value investing. Warren Buffett calls it the best book on investing ever written. Start here."},
+  {q:"Poor Charlie's Almanack — Charlie Munger",show:"Mental models for business and life from Buffett's partner. Every MBA should read this before they graduate."},
+  {q:"Zero to One — Peter Thiel",show:"What separates a startup from a business. Contrarian thinking for anyone interested in strategy or venture capital."},
+  {q:"Liar's Poker — Michael Lewis",show:"Inside Salomon Brothers in the 1980s bond market. The origin story of Wall Street excess — funny and sharp."},
+  {q:"The Big Short — Michael Lewis",show:"How a handful of traders saw the 2008 crash coming. Makes CDOs and credit default swaps actually interesting."},
+  {q:"Flash Boys — Michael Lewis",show:"High-frequency trading and how markets are structured. Eye-opening for anyone going into capital markets or equity research."},
+  {q:"Barbarians at the Gate — Burrough and Helyar",show:"The story of the RJR Nabisco LBO. The definitive book on private equity and M&A excess."},
+  {q:"When Genius Failed — Roger Lowenstein",show:"The collapse of Long-Term Capital Management. A masterclass in how risk models fail catastrophically in real life."},
+  {q:"Bad Blood — John Carreyrou",show:"The Theranos fraud. A case study in due diligence failure, board negligence, and narrative-driven investing."},
+  {q:"Shoe Dog — Phil Knight",show:"Nike's origin story told honestly. Strategy, branding, near-bankruptcy, and survival — all in one memoir."},
+  {q:"Sapiens — Yuval Noah Harari",show:"The macro context behind every business, market, and institution that exists today. Big picture thinking for strategists."},
+  {q:"The Lean Startup — Eric Ries",show:"How to build and test a business without burning cash. The framework behind every modern startup and MDT course."},
+  {q:"Fooled by Randomness — Nassim Taleb",show:"Why we confuse luck with skill in markets and in life. Mandatory reading for anyone in finance or investing."},
+  {q:"The Outsiders — William Thorndike",show:"Eight CEOs who quietly outperformed the market by ignoring conventional wisdom. A masterclass in capital allocation."},
+  {q:"Principles — Ray Dalio",show:"How Bridgewater, the world's largest hedge fund, is actually run. Systems thinking applied to organisations."},
+  {q:"The Psychology of Money — Morgan Housel",show:"Timeless lessons on wealth and behaviour. Short chapters, high signal. Better than most finance textbooks."},
+  {q:"Good to Great — Jim Collins",show:"What separates companies that make the leap from good to great. Evidence-based strategy research."},
+  {q:"Blue Ocean Strategy — Kim and Mauborgne",show:"Stop competing in crowded markets. Create new demand instead. Core reading for any strategy course."},
+  {q:"The Innovator's Dilemma — Clayton Christensen",show:"Why great companies fail when disruption hits. The most important idea in innovation strategy — essential for MDT."},
+  {q:"Thinking in Bets — Annie Duke",show:"A poker champion on decision-making under uncertainty. Useful mental model for investing and strategy both."},
+  {q:"Misbehaving — Richard Thaler",show:"The Nobel laureate's account of how behavioural economics was built. Pairs perfectly with BFBV coursework."},
+  {q:"The Black Swan — Nassim Taleb",show:"Extreme events nobody predicted shape history more than average ones. Essential for risk thinking in BFSI."},
+  {q:"Competitive Strategy — Michael Porter",show:"Five forces, generic strategies — the source of half your strategy syllabus. Worth reading the original, not just slides."},
+  {q:"The Essays of Warren Buffett — Lawrence Cunningham",show:"Buffett's annual letters organised by theme. More practical wisdom per page than most finance textbooks combined."},
+  {q:"Margin Call (2011) — Film",show:"24 hours inside an investment bank before a financial collapse. The most realistic Wall Street film ever made."},
+  {q:"The Big Short (2015) — Film",show:"The 2008 mortgage crisis explained through the people who bet against it. Entertaining and genuinely educational."},
+  {q:"Inside Job (2010) — Documentary",show:"Oscar-winning doc on the 2008 financial crisis. Makes you understand exactly who was responsible and how."},
+  {q:"Enron: The Smartest Guys in the Room (2005) — Documentary",show:"The Enron collapse from inside. The best corporate governance case study you will ever watch."},
+  {q:"Too Big to Fail (2011) — HBO Film",show:"The 2008 bailout reconstructed. Shows how Lehman fell and how close the global financial system came to collapse."},
+  {q:"The Social Network (2010) — Film",show:"The messy, human reality behind building a billion-dollar company. Strategy, IP, equity dilution, and betrayal."},
+  {q:"Moneyball (2011) — Film",show:"Data-driven decision making vs gut instinct. The analytics revolution that changed every industry, not just baseball."},
+  {q:"Becoming Warren Buffett (2017) — Documentary",show:"Inside the mind and daily life of the world's greatest investor. Quiet, honest, and unexpectedly moving."},
+  {q:"The Founder (2016) — Film",show:"How Ray Kroc took McDonald's from the brothers. About franchising, systems thinking, and ruthless scaling."},
+  {q:"Steve Jobs (2015) — Film",show:"Three product launches, three acts. A study in leadership, vision, and being difficult. Great for innovation strategy."},
+  {q:"Succession — HBO Series",show:"The cleanest depiction of power, corporate governance, and family dynamics in a conglomerate. Watch it as a case study."},
+  {q:"Industry — BBC/HBO Series",show:"Young analysts inside a London investment bank. Brutal, accurate, and the closest thing to a finance internship on screen."},
+  {q:"Billions — Showtime Series",show:"Hedge fund culture, insider trading, and the grey areas of financial law. Written with real Wall Street input."},
+  {q:"WeCrashed — Apple TV+ Series",show:"The WeWork collapse. Valuation hype, founder risk, and what happens when vision replaces fundamentals."},
+  {q:"The Dropout — Hulu Series",show:"Elizabeth Holmes and Theranos. Governance failure, board negligence, and the cost of narrative-driven investing."},
+  {q:"Super Pumped — Showtime Series",show:"Travis Kalanick and Uber. Startup ethics, board dynamics, and what unchecked growth does to a company's culture."},
+  {q:"Dirty Money — Netflix Series",show:"Each episode is a standalone corporate fraud case. Real companies, real consequences. Great for ethics and governance."},
+  {q:"Abstract: The Art of Design — Netflix Series",show:"How designers think. Relevant to innovation, branding, and understanding how form shapes behaviour — good for BRM."},
 ];
- 
-function getDailyQuote(){
+
+function getDailySuggestion(){
   const now=new Date();
-  const seed=now.getFullYear()*10000+((now.getMonth()+1)*100)+now.getDate();
-  // pick without consecutive repeats using seed
-  const idx=seed%QUOTES.length;
-  const prev=(seed-1)%QUOTES.length;
-  const pick=idx===prev?(idx+1)%QUOTES.length:idx;
-  return QUOTES[pick];
+  const seed=(now.getFullYear()*10000)+((now.getMonth()+1)*100)+now.getDate();
+  return QUOTES[seed%QUOTES.length];
 }
 (function(){
-  const q=getDailyQuote();
-  document.getElementById('quote-text').textContent='"'+q.q+'"';
-  document.getElementById('quote-credit').textContent='— '+q.ch+', '+q.show;
+  const s=getDailySuggestion();
+  document.getElementById('quote-text').innerHTML='<strong>'+s.q+'</strong>';
+  document.getElementById('quote-credit').textContent=s.show;
 })();
- 
+
 // ── SUBJECTS ──────────────────────────────────────────────
 const SUBJECTS=[
   {id:'in_a',code:'IN (A)',name:'Innovation Strategy',slot:'Mon & Wed · 8:30–10:00 AM',days:[1,3],time:'8:30–10:00 AM',timeStart:'08:30',location:'Gurukula Building, G-12'},
@@ -368,7 +427,7 @@ const TOTAL=20,REQUIRED=16;
 const LS_KEY='mdi_t5_v1';
 const SB_URL_KEY='mdi_sb_url';
 const SB_KEY_KEY='mdi_sb_key';
- 
+
 // ── STATE ─────────────────────────────────────────────────
 function freshState(){
   const s={};
@@ -388,7 +447,7 @@ function saveLocal(){localStorage.setItem(LS_KEY,JSON.stringify(state));}
 let state=loadLocal();
 let sbUrl=localStorage.getItem(SB_URL_KEY)||'';
 let sbKey=localStorage.getItem(SB_KEY_KEY)||'';
- 
+
 // ── SYNC ──────────────────────────────────────────────────
 function setSyncUI(s,msg){
   document.getElementById('sync-dot').className='sync-dot '+s;
@@ -430,7 +489,7 @@ async function loadFromSupabase(){
   }catch(e){setSyncUI('error','Failed');}
 }
 if(sbUrl&&sbKey){loadFromSupabase();}
- 
+
 // ── SETUP ─────────────────────────────────────────────────
 function openSetup(){document.getElementById('setup-overlay').classList.remove('hidden');document.getElementById('sb-url').value=sbUrl;document.getElementById('sb-key').value=sbKey;}
 function closeSetup(){document.getElementById('setup-overlay').classList.add('hidden');}
@@ -444,7 +503,7 @@ async function saveSetup(){
   msg.style.display='none';
   await loadFromSupabase();
 }
- 
+
 // ── TABS ──────────────────────────────────────────────────
 const tabsEl=document.getElementById('tabs');
 const panelsEl=document.getElementById('panels');
@@ -464,7 +523,7 @@ makeTab('__all__','📊 Overview',true,true);
 makeTab('__next__','📅 Next',true,false);
 makeTab('__rem__','🔔 Reminders',true,false);
 SUBJECTS.forEach(s=>makeTab(s.id,s.code,false,false));
- 
+
 function switchTab(id){
   ALL_IDS.forEach(tid=>{
     document.getElementById('tab-'+tid)?.classList.toggle('active',tid===id);
@@ -474,7 +533,7 @@ function switchTab(id){
   else if(id==='__next__')renderNext();
   else if(id==='__rem__')renderReminders();
 }
- 
+
 // ── REMINDER BADGES ───────────────────────────────────────
 function updateBadges(){
   const today=new Date();today.setHours(0,0,0,0);
@@ -509,7 +568,7 @@ function updateBadges(){
   });
   if(total){const b=document.createElement('span');b.className='badge';b.textContent=total;remTab.appendChild(b);}
 }
- 
+
 // ── OVERVIEW ──────────────────────────────────────────────
 function renderAll(){
   let tA=0,tM=0,cleared=0,atRisk=0;
@@ -549,7 +608,7 @@ function renderAll(){
     </div>
     <table class="ov-table"><thead><tr><th>Subject</th><th>Attended</th><th>Missed</th><th>Need</th><th>Can miss</th><th>Schedule</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
- 
+
 // ── NEXT CLASSES ──────────────────────────────────────────
 function renderNext(){
   const now=new Date();
@@ -600,7 +659,7 @@ function renderNext(){
   if(!html)html='<div class="empty">No classes in the next 7 days.</div>';
   document.getElementById('panel-__next__').innerHTML=`<div class="sub-header"><h2>Upcoming classes</h2><p>Next 7 days · tap to open subject</p></div>${html}`;
 }
- 
+
 // ── REMINDERS ─────────────────────────────────────────────
 function renderReminders(){
   const today=new Date();today.setHours(0,0,0,0);
@@ -636,7 +695,7 @@ function renderReminders(){
   document.getElementById('panel-__rem__').innerHTML=`<div class="sub-header"><h2>Reminders</h2><p>Upcoming tests, projects & assessments · tap ✓ to mark done</p></div>${html}`;
 }
 function markDone(sid,idx){state[sid].assessments[idx].done=true;saveLocal();syncToSupabase();renderReminders();updateBadges();renderPanel(sid);}
- 
+
 // ── SUBJECT PANEL ─────────────────────────────────────────
 function renderPanel(id){
   const s=SUBJECTS.find(x=>x.id===id);
@@ -695,11 +754,11 @@ function cellH(c,sid){
 }
 function fmtD(d){if(!d)return'';const[y,m,day]=d.split('-');return`${day}/${m}`;}
 function escH(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
- 
+
 // ── CLASS MODAL ───────────────────────────────────────────
 let curSub=null,curCls=null,curTestSub=null,curStatus='';
 let curPhotos=[];
- 
+
 function openCls(sid,idx){
   curSub=sid;curCls=idx;curPhotos=[];
   const c=state[sid].classes[idx];
@@ -764,7 +823,7 @@ function renderPhotoArea(){
   add.onclick=()=>document.getElementById('photo-input').click();
   area.appendChild(add);
 }
- 
+
 // ── ASSESSMENT MODAL ──────────────────────────────────────
 function openTest(sid){
   curTestSub=sid;
@@ -793,17 +852,17 @@ function saveTest(){
   saveLocal();closeTest();renderPanel(curTestSub);renderReminders();updateBadges();syncToSupabase();
 }
 function delAssessment(sid,i){if(confirm('Delete this assessment?')){state[sid].assessments.splice(i,1);saveLocal();renderPanel(sid);renderReminders();updateBadges();syncToSupabase();}}
- 
+
 // ── BACKDROP CLOSE ────────────────────────────────────────
 ['cls-overlay','test-overlay','setup-overlay'].forEach(id=>{
   document.getElementById(id).addEventListener('click',function(e){if(e.target===this)this.classList.add('hidden');});
 });
- 
+
 // ── iOS BANNER ────────────────────────────────────────────
 if(/iphone|ipad|ipod/i.test(navigator.userAgent)&&!window.navigator.standalone){
   document.getElementById('ios-banner').style.display='block';
 }
- 
+
 // ── INIT ──────────────────────────────────────────────────
 SUBJECTS.forEach(s=>renderPanel(s.id));
 renderAll();
